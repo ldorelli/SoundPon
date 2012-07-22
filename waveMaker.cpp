@@ -105,6 +105,9 @@ public:
 
 	void writeData(vector<char> data)
 	{
+		if(bitsPerSample != 8) {
+			throw "Expected 8 bit samples. For 16 bits, use short. For 32 bits, use int.\n";
+		}
 		sz += data.size() + 8;
 		// Atualiza o tamanho do arquivo
 		long pos = file.tellp();
@@ -119,10 +122,33 @@ public:
 		writeInteger(data.size());
 		// Writes the data
 		for(int i = 0; i < data.size(); i++) {
-			if(bitsPerSample == 8)
-				file.write(&data[i], 1);
+			file.write(&data[i], 1);
 		}
 	}
+
+	void writeData(vector<short> data)
+	{
+		if(bitsPerSample != 16) {
+			throw "Expected 16 bit samples. For 8 bits, use char. For 32 bits, use int.\n";
+		}
+		sz += data.size() + 8;
+		// Atualiza o tamanho do arquivo
+		long pos = file.tellp();
+		file.seekp(4);
+
+		writeInteger(sz);
+		// Volta para a posicao atual
+		file.seekp(pos);
+
+		file.write("data", 4);
+		// Data size
+		writeInteger(data.size());
+		// Writes the data
+		for(int i = 0; i < data.size(); i++) {
+			writeShort(data[i]);
+		}
+	}
+
 
 	void close() {
 		file.close();
@@ -150,7 +176,7 @@ int main (void)
 
 	for(int x = 1; x <= 20; x++) 
 		for(int i = 0; i < samplesQty/20; i++) 
-			data.pb( (char) 128 + 55 *  ( sin(i/x) + (x%4) * cos(i/x) ) );
+			data.pb( (char) 128 + ( 70 * sin(i/x) + 30 * sin(i) ) );
 
 	f.writeData(data);
 	f.close();
