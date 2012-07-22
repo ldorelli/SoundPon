@@ -148,9 +148,9 @@ int main (void)
 
 	vector<char> data;
 
-	for(int x = 1; x <= 5; x++) 
-		for(int i = 0; i < samplesQty/5; i++) 
-			data.pb( (char) 128 + 55 * sin(i/x) );
+	for(int x = 1; x <= 20; x++) 
+		for(int i = 0; i < samplesQty/20; i++) 
+			data.pb( (char) 128 + 55 *  ( sin(i/x) + (x%4) * cos(i/x) ) );
 
 	f.writeData(data);
 	f.close();
@@ -158,10 +158,10 @@ int main (void)
 	fstream g("mywav.wav", ios::in);
 	unsigned char c;
 	g.unsetf(ios_base::skipws);
-
+/*
 	while(g >> c) {
 		printf("%x ", c);
 	}
-
+*/
 	return 0;
 }
