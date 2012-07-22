@@ -25,27 +25,9 @@ typedef pair<int,int> pii;
 int main (void)
 {
 	string fileName = "mywav.wav";
-
 	int discpl = 8;
 	double dur = 0.3;
 	BasicWaveBuilder wb(2, 15, 22050, 16);
-	//nota, inicio, duracao, volume, canal
-    wb.addNote(sp::Note::E5,  0.0, dur, 0.9, 1);
-    wb.addNote(sp::Note::D5+1,  0.3, dur, 0.9, 1);
-    //--
-    wb.addNote(sp::Note::E5,  0.6, dur, 0.9, 1);
-    wb.addNote(sp::Note::D5+1, 0.9, dur, 0.9, 1);
-    wb.addNote(sp::Note::E5,  1.2, dur, 0.9, 1);
-    wb.addNote(sp::Note::B4,  1.5, dur, 0.9, 1);
-    wb.addNote(sp::Note::D5,  1.8, dur, 0.9, 1);
-    wb.addNote(sp::Note::C5,  2.1, dur, 0.9, 1);
-    //--
-    wb.addNote(sp::Note::A4,  2.4, dur, 0.9, 1);
-    wb.addNote(sp::Note::A2,  2.4, dur, 0.9, 2);
-    wb.addNote(sp::Note::A4,  2.7, dur, 0.9, 1);
-    wb.addNote(sp::Note::E3,  2.7, dur, 0.9, 2);
-    //--
-    wb.addNote(sp::Note::A3,  3.0, dur, 0.9, 2);
 	// DO RE MI FA :D
 	/*
 	wb.addNote(sp::Note::C5+discpl,    0, 0.5, 0.9, 1);
@@ -100,6 +82,31 @@ int main (void)
 	wb.addNote(sp::Note::F5, 14.0, 0.5, 0.9, 2);
 	wb.addNote(sp::Note::F5, 14.5, 0.5, 0.9, 2); 
 	*/
+	dur = 0.3;
+	wb.addNote(sp::Note::E5,  0.0, dur, 0.9, 1);
+	wb.addNote(sp::Note::D5+1,  0.3, dur, 0.9, 1);
+	//--
+	wb.addNote(sp::Note::E5,  0.6, dur, 0.9, 1);
+	wb.addNote(sp::Note::D5+1, 0.9, dur, 0.9, 1);
+	wb.addNote(sp::Note::E5,  1.2, dur, 0.9, 1);
+	wb.addNote(sp::Note::B4,  1.5, dur, 0.9, 1);
+	wb.addNote(sp::Note::D5,  1.8, dur, 0.9, 1);
+	wb.addNote(sp::Note::C5,  2.1, dur, 0.9, 1);
+	//--
+	wb.addNote(sp::Note::A4,  2.4, dur, 0.9, 1);
+	wb.addNote(sp::Note::A2,  2.4, dur, 0.9, 2);
+	wb.addNote(sp::Note::A4,  2.7, dur, 0.9, 1);
+	wb.addNote(sp::Note::E3,  2.7, dur, 0.9, 2);
+	wb.addNote(sp::Note::A3,  3.0, dur, 0.9, 2);
+	wb.addNote(sp::Note::C4,  3.3, dur, 0.9, 1);
+	wb.addNote(sp::Note::E4,  3.6, dur, 0.9, 1);
+	wb.addNote(sp::Note::A4,  3.9, dur, 0.9, 1);
+	//--
+	wb.addNote(sp::Note::B4,  3.0, dur, 0.9, 1);
+	wb.addNote(sp::Note::E2,  3.0, dur, 0.9, 2);
+	wb.addNote(sp::Note::B4,  3.3, dur, 0.9, 1);
+	wb.addNote(sp::Note::E3,  3.3, dur, 0.9, 2);
+	wb.addNote(sp::Note::G3+1,  3.6, dur, 0.9, 2);
 /*
 	sineWave s;
 	wb.setWave(&s, 0, 15);

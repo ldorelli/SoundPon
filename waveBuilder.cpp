@@ -1,4 +1,4 @@
-#include <WaveBuilder.h>
+#include <waveBuilder.h>
 
 
 sp::BasicWaveBuilder::BasicWaveBuilder(int channelsQty, 
