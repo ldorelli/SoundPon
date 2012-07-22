@@ -38,11 +38,15 @@ void sp::BasicWaveBuilder::writeToWave(std::string fileName) {
 	file.close();
 }
 
+
 void sp::BasicWaveBuilder::addNote(sp::Note note, double t, double duration, double volume, int channel)
 {
+	channel--;
 	int i = getSampleIndexByTime(t);
-	int j = getSampleIndexByTime(t + duration);
-	for( ; i <= j; i++) {
+	int j = getSampleIndexByTime(t + duration) - 1;
+	//std::cout <<  i << " " << j << "  " << data16.size()
+	//	<< " " << channel << std::endl;
+	for( ; i < j; i++) {
 		if(bitsPerSample == 8) {
 			data8[channelsQty*i+channel] = 
 				data8[channelsQty*i+channel] + 

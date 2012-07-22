@@ -1,5 +1,5 @@
 #include <note.h>
-
+#include <iostream>
 
 
 sp::Note::Note(int note, int octave)

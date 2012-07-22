@@ -1,6 +1,7 @@
 #include <chord.h>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 sp::Chord::Chord() {
 	totalVolume = 0.0;
