@@ -17,6 +17,7 @@ using namespace std;
 typedef long long int LL;
 typedef pair<int,int> pii;
 
+
 #define pb push_back
 #define mp make_pair
 #define byte(x) ((const char*) &x)
@@ -105,7 +106,7 @@ public:
 		writeFormat();
 	}
 
-	void writeData(vector<char> data)
+	void writeData(vector<unsigned char> data)
 	{
 		if(bitsPerSample != 8) {
 			throw "Expected 8 bit samples. For 16 bits, use short. For 32 bits, use int.\n";
@@ -124,7 +125,7 @@ public:
 		writeInteger(data.size());
 		// Writes the data
 		for(int i = 0; i < data.size(); i++) {
-			file.write(&data[i], 1);
+			file.write((char *) &data[i], 1);
 		}
 	}
 
@@ -133,7 +134,7 @@ public:
 		if(bitsPerSample != 16) {
 			throw "Expected 16 bit samples. For 8 bits, use char. For 32 bits, use int.\n";
 		}
-		sz += data.size() + 8;
+		sz += 2 * data.size() + 8;
 		// Atualiza o tamanho do arquivo
 		long pos = file.tellp();
 		file.seekp(4);
@@ -144,7 +145,7 @@ public:
 
 		file.write("data", 4);
 		// Data size
-		writeInteger(data.size());
+		writeInteger(data.size() * 2);
 		// Writes the data
 		for(int i = 0; i < data.size(); i++) {
 			writeShort(data[i]);
@@ -165,16 +166,20 @@ public:
 
 /*
 	Classe que possui funções para incluir perturbações 
-	Em uma onda
+		em uma onda
 */
 class BasicWaveBuilder {
 private:
-	vector<char> 	data;
+	vector<unsigned char> 	data8;
+	vector<short>			data16;
+	vector<int>				data32;
+
 	int 			channelsQty;
 	int 			sampleRate;
 	double			hertzFrequency;
 	double			totalTime;
 	double 			timePerSample;
+	int 			bitsPerSample;
 
 public:
 
@@ -182,37 +187,63 @@ public:
 		channelsQty = quantidade de canais
 		lenght = 
 	**/
-	BasicWaveBuilder(int channelsQty, int seconds, int sampleRate) 
+	BasicWaveBuilder(int channelsQty, int seconds, int sampleRate, int bitsPerSample) 
 	{
 		/* Cria um vetor com todas as amostras */
-		data = vector<char>(seconds * sampleRate * channelsQty, 128);
+		if(bitsPerSample == 8)
+			data8 = vector<unsigned char> (seconds * sampleRate * channelsQty, 128);
+		else if(bitsPerSample == 16)
+			data16 = vector<short> (seconds * sampleRate * channelsQty, 0);
+		else data32 = vector<int> (seconds * sampleRate * channelsQty, 0);
+
 		this->channelsQty = channelsQty;
 		this->sampleRate = sampleRate;
 		this->totalTime = seconds;
 		timePerSample = (double) 1/sampleRate;
 		hertzFrequency = (double) 2 * pi/sampleRate;
+		this->bitsPerSample = bitsPerSample;
 	}
 
 	int getSampleIndexByTime(double t) {
-		//cout << timePerSample << endl;
-		return min( (int) data.size() - 1, (int) (t/timePerSample) );
+		int dataSize;
+		
+		if(bitsPerSample == 8) dataSize = data8.size();
+		else if(bitsPerSample == 16) dataSize = data16.size();
+		else dataSize = data32.size();
+
+		return min( dataSize-1, (int) (t/timePerSample) );
 	}
 
 	void writeToWave(string fileName) {
-		WaveFile file(fileName, channelsQty, 8, sampleRate);
-		file.writeData(data);
+
+		WaveFile file(fileName, channelsQty, bitsPerSample, sampleRate);
+		
+		if(bitsPerSample == 8)
+			file.writeData(data8);
+		else if(bitsPerSample == 16)
+			file.writeData(data16);
+		//else file.writeData(data32);
+
 		file.close();
 	}
 
-	void addNote(Note note, int octave,
+	void addNote(sp::Note_ note, int octave,
 				 double t, double duration, double percent)
 	{
 		int i = getSampleIndexByTime(t);
 		int j = getSampleIndexByTime(t + duration);
-
+		
 		for( ; i <= j; i++) {
-			data[i] = data[i] + percent * 
-				sin(i * hertzFrequency * frequencyTable[octave][note]);
+			if(bitsPerSample == 8) {
+				data8[i] = data8[i] + percent * 
+					sin(i * hertzFrequency * sp::Note::frequencyTable[octave][note]);
+			} else if(bitsPerSample == 16) {
+				data16[i] = data16[i] + percent * 
+					sin(i * hertzFrequency * sp::Note::frequencyTable[octave][note]);
+			} else {
+				data32[i] = data32[i] + percent * 
+					sin(i * hertzFrequency * sp::Note::frequencyTable[octave][note]);
+			}
 		}
 	}
 
@@ -241,34 +272,35 @@ int main (void)
 	f.close();
 */
 
-	BasicWaveBuilder wb(1, 15, 22050);
+	int octave = 5;
+	BasicWaveBuilder wb(1, 15, 22050, 16);
 	// DO RE MI FA :D
-	wb.addNote(C, 4, 0, 0.5, 30);
-	wb.addNote(D, 4, 0.5, 0.5, 30);
-	wb.addNote(E, 4, 1, 0.5, 30);
-	wb.addNote(F, 4, 1.5, 0.5, 30);
-	wb.addNote(F, 4, 2.5, 0.5, 30);
-	wb.addNote(F, 4, 3.0, 0.5, 30);
-	wb.addNote(C, 4, 4, 0.5, 30);
-	wb.addNote(D, 4, 4.5, 0.5, 30);
-	wb.addNote(C, 4, 5, 0.5, 30);
-	wb.addNote(D, 4, 5.5, 0.5, 30);
-	wb.addNote(D, 4, 6.5, 0.5, 30);
-	wb.addNote(D, 4, 7, 0.5, 30);
+	wb.addNote(sp::C, octave, 0, 0.5, 32700);
+	wb.addNote(sp::D, octave, 0.5, 0.5, 32700);
+	wb.addNote(sp::E, octave, 1, 0.5, 32700);
+	wb.addNote(sp::F, octave, 1.5, 0.5, 32700);
+	wb.addNote(sp::F, octave, 2.5, 0.5, 32700);
+	wb.addNote(sp::F, octave, 3.0, 0.5, 32700);
+	wb.addNote(sp::C, octave, 4, 0.5, 32700);
+	wb.addNote(sp::D, octave, 4.5, 0.5, 32700);
+	wb.addNote(sp::C, octave, 5, 0.5, 32700);
+	wb.addNote(sp::D, octave, 5.5, 0.5, 32700);
+	wb.addNote(sp::D, octave, 6.5, 0.5, 32700);
+	wb.addNote(sp::D, octave, 7, 0.5, 32700);
 
-	wb.addNote(C, 4, 8, 0.5, 30);
-	wb.addNote(G, 4, 8.5, 0.5, 30);
-	wb.addNote(F, 4, 9, 0.5, 30);
-	wb.addNote(E, 4, 9.5, 0.5, 30);
-	wb.addNote(E, 4, 10.5, 0.5, 30);
-	wb.addNote(E, 4, 11, 0.5, 30);
+	wb.addNote(sp::C, octave, 8, 0.5, 32700);
+	wb.addNote(sp::G, octave, 8.5, 0.5, 32700);
+	wb.addNote(sp::F, octave, 9, 0.5, 32700);
+	wb.addNote(sp::E, octave, 9.5, 0.5, 32700);
+	wb.addNote(sp::E, octave, 10.5, 0.5, 32700);
+	wb.addNote(sp::E, octave, 11, 0.5, 32700);
 
-	wb.addNote(C, 4, 11.5, 0.5, 30);
-	wb.addNote(D, 4, 12, 0.5, 30);
-	wb.addNote(E, 4, 12.5, 0.5, 30);
-	wb.addNote(F, 4, 13, 0.5, 30);
-	wb.addNote(F, 4, 14, 0.5, 30);
-	wb.addNote(F, 4, 14.5, 0.5, 30);
+	wb.addNote(sp::C, octave, 11.5, 0.5, 32700);
+	wb.addNote(sp::D, octave, 12, 0.5, 32700);
+	wb.addNote(sp::E, octave, 12.5, 0.5, 32700);
+	wb.addNote(sp::F, octave, 13, 0.5, 32700);
+	wb.addNote(sp::F, octave, 14, 0.5, 32700);
+	wb.addNote(sp::F, octave, 14.5, 0.5, 32700);
 
 
 	wb.writeToWave(fileName);
