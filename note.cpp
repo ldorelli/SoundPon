@@ -202,8 +202,8 @@ sp::Note sp::Note::operator+ (int b) const {
 	int newNote = getNoteByIndex((idx+b)%12);
 	int skip8;
 
-	if(b > 0) skip8 = b/12 + (idx+b)>12;
-	else skip8 =  - ((-b)/12 + (idx<-b));
+	if(b > 0) skip8 = b/12 + (idx+b%12)>12;
+	else skip8 =  - ((-b)/12 + (idx<(-b)%12));
 
 	answ.note = newNote;
 	answ.octave = octave + skip8;
