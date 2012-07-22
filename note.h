@@ -35,6 +35,11 @@ protected:
 
 	Note(){}
 
+	// Auxiliary function
+
+	static int getNoteByIndex(int index);
+
+	static int getIndexByNote(int note);
 
 public:
 

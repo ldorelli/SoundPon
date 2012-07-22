@@ -115,17 +115,98 @@ const double sp::Note::frequencyTable[10][21] =
 
 	};
 
+int sp::Note::getNoteByIndex(int index)
+{
+	switch(index)
+	{
+		case 0:
+			return C;
+		case 1:
+			return Cf;
+		case 2:
+			return D;
+		case 3:
+			return Df;
+		case 4:
+			return E;
+		case 5:
+			return F;
+		case 6:
+			return Ff;
+		case 7:
+			return G;
+		case 8:
+			return Gf;
+		case 9:
+			return A;
+		case 10:
+			return Af;
+		case 11:
+			return B;
+	}
+}
+
+int sp::Note::getIndexByNote(int note)
+{
+	switch(note)
+	{
+		case C:
+			return 0;
+		case Cf:
+			return 1;
+		case Cb:
+			return 11;
+		case D:
+			return 2;
+		case Df:
+			return 3;
+		case Db:
+			return 1;
+		case E: 
+			return 4;
+		case Ef:
+			return 5;
+		case Eb:
+			return 3;
+		case F:
+			return 5;
+		case Ff:
+			return 6;
+		case Fb:
+			return 4;
+		case G:
+			return 7;
+		case Gf:
+			return 8;
+		case Gb:
+			return 6;
+		case A:
+			return 9;
+		case Af:
+			return 10;
+		case Ab:
+			return 8;
+		case B:
+			return 11;
+		case Bb:
+			return 10;
+		case Bf:
+			return 0;
+	}
+}
+
 sp::Note sp::Note::operator+ (int b) const {
 	Note answ;
 
-	if(b > 0) {
-		answ.note = (note + b)%21;
-		answ.octave = octave + (note+b)/21;
-	} else {
-		answ.note = (note + b + 21)%21;
-		if(b > note) answ.octave = octave-1;
-		else answ.octave = octave;
-	}
+	int idx = getIndexByNote(this->note);
+	int newNote = getNoteByIndex((idx+b)%12);
+	int skip8;
+
+	if(b > 0) skip8 = b/12 + (idx+b)>12;
+	else skip8 =  - ((-b)/12 + (idx<-b));
+
+	answ.note = newNote;
+	answ.octave = octave + skip8;
 	return answ;
 }
 
