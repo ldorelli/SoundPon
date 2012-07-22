@@ -227,22 +227,21 @@ public:
 		file.close();
 	}
 
-	void addNote(sp::Note_ note, int octave,
-				 double t, double duration, double percent)
+	void addNote(sp::Note note, double t, double duration, double percent)
 	{
 		int i = getSampleIndexByTime(t);
 		int j = getSampleIndexByTime(t + duration);
-		
+
 		for( ; i <= j; i++) {
 			if(bitsPerSample == 8) {
 				data8[i] = data8[i] + percent * 
-					sin(i * hertzFrequency * sp::Note::frequencyTable[octave][note]);
+					sin(i * hertzFrequency * note.getFrequency());
 			} else if(bitsPerSample == 16) {
 				data16[i] = data16[i] + percent * 
-					sin(i * hertzFrequency * sp::Note::frequencyTable[octave][note]);
+					sin(i * hertzFrequency * note.getFrequency());
 			} else {
 				data32[i] = data32[i] + percent * 
-					sin(i * hertzFrequency * sp::Note::frequencyTable[octave][note]);
+					sin(i * hertzFrequency * note.getFrequency());
 			}
 		}
 	}
@@ -275,32 +274,30 @@ int main (void)
 	int octave = 5;
 	BasicWaveBuilder wb(1, 15, 22050, 16);
 	// DO RE MI FA :D
-	wb.addNote(sp::C, octave, 0, 0.5, 32700);
-	wb.addNote(sp::D, octave, 0.5, 0.5, 32700);
-	wb.addNote(sp::E, octave, 1, 0.5, 32700);
-	wb.addNote(sp::F, octave, 1.5, 0.5, 32700);
-	wb.addNote(sp::F, octave, 2.5, 0.5, 32700);
-	wb.addNote(sp::F, octave, 3.0, 0.5, 32700);
-	wb.addNote(sp::C, octave, 4, 0.5, 32700);
-	wb.addNote(sp::D, octave, 4.5, 0.5, 32700);
-	wb.addNote(sp::C, octave, 5, 0.5, 32700);
-	wb.addNote(sp::D, octave, 5.5, 0.5, 32700);
-	wb.addNote(sp::D, octave, 6.5, 0.5, 32700);
-	wb.addNote(sp::D, octave, 7, 0.5, 32700);
-
-	wb.addNote(sp::C, octave, 8, 0.5, 32700);
-	wb.addNote(sp::G, octave, 8.5, 0.5, 32700);
-	wb.addNote(sp::F, octave, 9, 0.5, 32700);
-	wb.addNote(sp::E, octave, 9.5, 0.5, 32700);
-	wb.addNote(sp::E, octave, 10.5, 0.5, 32700);
-	wb.addNote(sp::E, octave, 11, 0.5, 32700);
-
-	wb.addNote(sp::C, octave, 11.5, 0.5, 32700);
-	wb.addNote(sp::D, octave, 12, 0.5, 32700);
-	wb.addNote(sp::E, octave, 12.5, 0.5, 32700);
-	wb.addNote(sp::F, octave, 13, 0.5, 32700);
-	wb.addNote(sp::F, octave, 14, 0.5, 32700);
-	wb.addNote(sp::F, octave, 14.5, 0.5, 32700);
+	wb.addNote(sp::Note::C5, 0, 0.5, 32700);
+	wb.addNote(sp::Note::D5, 0.5, 0.5, 32700);
+	wb.addNote(sp::Note::E5, 1, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 1.5, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 2.5, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 3.0, 0.5, 32700);
+	wb.addNote(sp::Note::C5, 4, 0.5, 32700);
+	wb.addNote(sp::Note::D5, 4.5, 0.5, 32700);
+	wb.addNote(sp::Note::C5, 5, 0.5, 32700);
+	wb.addNote(sp::Note::D5, 5.5, 0.5, 32700);
+	wb.addNote(sp::Note::D5, 6.5, 0.5, 32700);
+	wb.addNote(sp::Note::D5, 7, 0.5, 32700);
+	wb.addNote(sp::Note::C5, 8, 0.5, 32700);
+	wb.addNote(sp::Note::G5, 8.5, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 9, 0.5, 32700);
+	wb.addNote(sp::Note::E5, 9.5, 0.5, 32700);
+	wb.addNote(sp::Note::E5, 10.5, 0.5, 32700);
+	wb.addNote(sp::Note::E5, 11, 0.5, 32700);
+	wb.addNote(sp::Note::C5, 11.5, 0.5, 32700);
+	wb.addNote(sp::Note::D5, 12, 0.5, 32700);
+	wb.addNote(sp::Note::E5, 12.5, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 13, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 14, 0.5, 32700);
+	wb.addNote(sp::Note::F5, 14.5, 0.5, 32700);
 
 
 	wb.writeToWave(fileName);
