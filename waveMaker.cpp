@@ -10,16 +10,18 @@
 #include <list>
 #include <fstream>
 
+#include "note.h"
+
 using namespace std;
 
 typedef long long int LL;
 typedef pair<int,int> pii;
 
-#define F first
-#define S second
 #define pb push_back
 #define mp make_pair
 #define byte(x) ((const char*) &x)
+
+const double  	pi = acos(-1);
 
 class WaveFile {
 private:
@@ -159,10 +161,67 @@ public:
 	}
 };
 
+
+
+/*
+	Classe que possui funções para incluir perturbações 
+	Em uma onda
+*/
+class BasicWaveBuilder {
+private:
+	vector<char> 	data;
+	int 			channelsQty;
+	int 			sampleRate;
+	double			hertzFrequency;
+	double			totalTime;
+	double 			timePerSample;
+
+public:
+
+	/**
+		channelsQty = quantidade de canais
+		lenght = 
+	**/
+	BasicWaveBuilder(int channelsQty, int seconds, int sampleRate) 
+	{
+		/* Cria um vetor com todas as amostras */
+		data = vector<char>(seconds * sampleRate * channelsQty, 128);
+		this->channelsQty = channelsQty;
+		this->sampleRate = sampleRate;
+		this->totalTime = seconds;
+		timePerSample = (double) 1/sampleRate;
+		hertzFrequency = (double) 2 * pi/sampleRate;
+	}
+
+	int getSampleIndexByTime(double t) {
+		//cout << timePerSample << endl;
+		return min( (int) data.size() - 1, (int) (t/timePerSample) );
+	}
+
+	void writeToWave(string fileName) {
+		WaveFile file(fileName, channelsQty, 8, sampleRate);
+		file.writeData(data);
+		file.close();
+	}
+
+	void addNote(Note note, int octave,
+				 double t, double duration, double percent)
+	{
+		int i = getSampleIndexByTime(t);
+		int j = getSampleIndexByTime(t + duration);
+
+		for( ; i <= j; i++) {
+			data[i] = data[i] + percent * 
+				sin(i * hertzFrequency * frequencyTable[octave][note]);
+		}
+	}
+
+};
+
 int main (void)
 {
 	string fileName = "mywav.wav";
-
+/*
 	int channels = 1;
 	int bitsPerSample  = 8;
 	int seconds = 15;
@@ -170,7 +229,7 @@ int main (void)
 
 	WaveFile f(fileName, channels, bitsPerSample, sampleRate);
 	
-	int samplesQty = seconds * sampleRate;
+	int samplesQty = seconds * sampleRate * channels;
 
 	vector<char> data;
 
@@ -180,11 +239,44 @@ int main (void)
 
 	f.writeData(data);
 	f.close();
+*/
 
+	BasicWaveBuilder wb(1, 15, 22050);
+	// DO RE MI FA :D
+	wb.addNote(C, 4, 0, 0.5, 30);
+	wb.addNote(D, 4, 0.5, 0.5, 30);
+	wb.addNote(E, 4, 1, 0.5, 30);
+	wb.addNote(F, 4, 1.5, 0.5, 30);
+	wb.addNote(F, 4, 2.5, 0.5, 30);
+	wb.addNote(F, 4, 3.0, 0.5, 30);
+	wb.addNote(C, 4, 4, 0.5, 30);
+	wb.addNote(D, 4, 4.5, 0.5, 30);
+	wb.addNote(C, 4, 5, 0.5, 30);
+	wb.addNote(D, 4, 5.5, 0.5, 30);
+	wb.addNote(D, 4, 6.5, 0.5, 30);
+	wb.addNote(D, 4, 7, 0.5, 30);
+
+	wb.addNote(C, 4, 8, 0.5, 30);
+	wb.addNote(G, 4, 8.5, 0.5, 30);
+	wb.addNote(F, 4, 9, 0.5, 30);
+	wb.addNote(E, 4, 9.5, 0.5, 30);
+	wb.addNote(E, 4, 10.5, 0.5, 30);
+	wb.addNote(E, 4, 11, 0.5, 30);
+
+	wb.addNote(C, 4, 11.5, 0.5, 30);
+	wb.addNote(D, 4, 12, 0.5, 30);
+	wb.addNote(E, 4, 12.5, 0.5, 30);
+	wb.addNote(F, 4, 13, 0.5, 30);
+	wb.addNote(F, 4, 14, 0.5, 30);
+	wb.addNote(F, 4, 14.5, 0.5, 30);
+
+
+	wb.writeToWave(fileName);
+/*
 	fstream g("mywav.wav", ios::in);
 	unsigned char c;
 	g.unsetf(ios_base::skipws);
-/*
+
 	while(g >> c) {
 		printf("%x ", c);
 	}
