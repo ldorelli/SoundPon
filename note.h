@@ -6,23 +6,35 @@
 
 namespace sp {
 
-enum Note_ { 
-		
-		C, Cf, Cb, 
-		D, Df, Db, 
-		E, Ef, Eb, 
-		F, Ff, Fb, 
-		G, Gf, Gb,
-		A, Af, Ab, 
-		B, Bf, Bb, 
-	}	;
+#define C 0
+#define Cf 1
+#define Cb 2
+#define D 3
+#define Db 4
+#define Df 5
+#define E 6
+#define Ef 7
+#define Eb 8
+#define F 9
+#define Ff 10
+#define Fb 11
+#define G 12
+#define Gf 13
+#define Gb 14
+#define A 15
+#define Af 16
+#define Ab 17
+#define B 18
+#define Bf 19
+#define Bb 20
 
 class Note {
-private:
+protected:
 	int		octave;
-	Note_ 	note;
+	int 	note;
 
 	Note(){}
+
 
 public:
 
@@ -113,11 +125,11 @@ public:
 
 
 
-	Note(Note_ note, int octave);
+	Note(int note, int octave);
 
 	double getFrequency();
 
-	Note operator+ (const Note &b) const;
+	Note operator+ (int b) const;
 };
 
 }
