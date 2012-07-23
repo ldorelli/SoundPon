@@ -30,6 +30,7 @@ protected:
 	double			totalTime;
 	double 			timePerSample;
 	int 			bitsPerSample;
+	double 			maxVolume;
 
 public:
 

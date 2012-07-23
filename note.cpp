@@ -195,18 +195,27 @@ int sp::Note::getIndexByNote(int note)
 	}
 }
 
+
+using namespace std;
 sp::Note sp::Note::operator+ (int b) const {
 	Note answ;
 
 	int idx = getIndexByNote(this->note);
-	int newNote = getNoteByIndex((idx+b)%12);
+	int newNote;  
 	int skip8;
 
-	if(b > 0) skip8 = b/12 + (idx+b%12)>12;
-	else skip8 =  - ((-b)/12 + (idx<(-b)%12));
+
+	if(b > 0) {
+		skip8 = b/12 + idx+b>=12;
+		newNote = getNoteByIndex((idx+b)%12);
+	} else {
+		newNote = getNoteByIndex((idx+b+12)%12);
+		skip8 =  -b/12 + idx<-b;
+	}
 
 	answ.note = newNote;
 	answ.octave = octave + skip8;
+	
 	return answ;
 }
 
@@ -216,6 +225,7 @@ double sp::Note::getFrequency()
 }
 
 
+const  sp::Note sp::Note::MiddleC = sp::Note(C,  4);
 const  sp::Note sp::Note::C0 = sp::Note(C,  0);
 const sp::Note sp::Note::Cb0 = sp::Note(Cb, 0);
 const sp::Note sp::Note::Cf0 = sp::Note(Cf, 0);

@@ -10,8 +10,8 @@ namespace sp {
 #define Cf 1
 #define Cb 2
 #define D 3
-#define Db 4
-#define Df 5
+#define Df 4
+#define Db 5
 #define E 6
 #define Ef 7
 #define Eb 8
@@ -47,6 +47,7 @@ public:
 
 	static const Note 
 
+		MiddleC, 
 		C0, Cf0, Cb0,
 		D0, Df0, Db0,
 		E0, Ef0, Eb0,

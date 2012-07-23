@@ -50,8 +50,7 @@ void sp::BasicWaveBuilder::addNote(sp::Note note, double t, double duration, dou
 	channel--;
 	int i = getSampleIndexByTime(t);
 	int j = getSampleIndexByTime(t + duration) - 1;
-	//std::cout <<  i << " " << j << "  " << data16.size()
-	//	<< " " << channel << std::endl;
+
 	for( ; i < j; i++) {
 		if(bitsPerSample == 8) {
 			data8[channelsQty*i+channel] = 
@@ -169,8 +168,8 @@ void sp::ASDRWaveBuilder::addNote(
 	*/
 
 	/* Volume = m * t + b */
-	double m = (sustain - peakTime)/d;
-	double b = volume - m * peakTime;
+	 m = (s - peakTime)/d;
+	 b = volume - m * peakTime;
 	for( ; i <= holdTime; i++) {
 		double vol = m * i + b;
 		if(bitsPerSample == 8) {
