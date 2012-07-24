@@ -30,10 +30,9 @@ double sp::Chord::discretize(int t, double baseFrequency, double volume)
 double sp::Chord::discretizeSingleNote(sp::Note note,
  int t, double baseFrequency, double volume)
 {
-	double mx = 4;
-
-	return volume * ( sin(t * baseFrequency * note.getFrequency())
-		+ sin(t * baseFrequency * 2 * note.getFrequency())
-		+ sin(t * baseFrequency * 3 * note.getFrequency()) 
-		+ sin(t * baseFrequency * 4 * note.getFrequency()) )/mx;
+	int harmonica = 6;
+	double answ = 0.0;
+	for(int i = 1; i <= harmonica; i++)
+		answ += sin(t * i * baseFrequency * note.getFrequency());
+	return answ * volume/harmonica;
 }
