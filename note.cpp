@@ -1,6 +1,6 @@
 #include <note.h>
 #include <iostream>
-
+#include <cstdlib>
 
 sp::Note::Note(int note, int octave)
 {
@@ -218,6 +218,7 @@ sp::Note sp::Note::operator+ (int b) const {
 	
 	return answ;
 }
+
 
 double sp::Note::getFrequency()
 {

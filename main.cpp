@@ -55,7 +55,7 @@ int main (void)
 	wb.addNote(sp::Note::F3, 6.00, 0.20, 0.5, 2);
 	wb.addNote(sp::Note::G3, 6.20, 0.20, 0.5, 2);
 	wb.addNote(sp::Note::E3, 6.40, 0.20, 0.5, 2);
-		
+		/*
 	// -- CH 1
 	wb.addNote(sp::Note::D3,    0, 0.20, 0.5, 1);
 	wb.addNote(sp::Note::F3, 0.20, 0.20, 0.5, 1);
@@ -83,7 +83,7 @@ int main (void)
 	wb.addNote(sp::Note::F3, 6.00, 0.20, 0.5, 1);
 	wb.addNote(sp::Note::G3, 6.20, 0.20, 0.5, 1);
 	wb.addNote(sp::Note::E3, 6.40, 0.20, 0.5, 1);
-
+		*/
 	wb.writeToWave(fileName);
 
 

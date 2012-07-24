@@ -12,6 +12,21 @@ void sp::Chord::addNote(sp::Note n, int I) {
 	notes.push_back( std::make_pair(n, I) );
 }
 
+double sp::Chord::getMixedFrequency(double t, double baseFrequency)
+{
+	/* 
+		Calculates the intensity per note from the chord
+		Default adding notes (with I=1) will make them all
+		have the same weight, hence an arithmetic mean will 
+		be calculated.
+	*/
+	double val = 0.0;
+	for(int i = 0; i < notes.size(); i++)
+		val += notes[i].second/totalVolume *
+			sin(t * baseFrequency * notes[i].first.getFrequency());
+	return val;
+}
+
 double sp::Chord::discretize(int t, double baseFrequency, double volume) 
 {
 	/* 
@@ -30,7 +45,7 @@ double sp::Chord::discretize(int t, double baseFrequency, double volume)
 double sp::Chord::discretizeSingleNote(sp::Note note,
  int t, double baseFrequency, double volume)
 {
-	int harmonica = 6;
+	int harmonica = 5;
 	double answ = 0.0;
 	for(int i = 1; i <= harmonica; i++)
 		answ += sin(t * i * baseFrequency * note.getFrequency());

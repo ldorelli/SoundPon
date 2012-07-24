@@ -33,6 +33,11 @@ public:
 	double discretize(int t, double baseFrequency, 
 		double maxVolume);
 
+	/* 
+		Return only the mixed frequency of notes
+	*/
+	double getMixedFrequency(double t, double baseFrequency);
+
 	static double discretizeSingleNote(
 		sp::Note note, int t, double baseFrequency, double volume);
 };
