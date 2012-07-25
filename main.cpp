@@ -39,33 +39,34 @@ int main (void)
 	// DO RE MI FA :D
 	//wb.addNote(sp::Note::D5, 0.00, 0.20, 1.0, 2, s);
 	
-	wb.addNote(sp::Note::D3, 0.00, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::F3, 0.20, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::D4, 0.40, 0.40, 1.0, 1, s);
+	wb.addNote(sp::Note::D3, 0.00, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::F3, 0.20, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::D4, 0.40, 0.40, 1.0, 2, s);
 
+	
 	// --
-	wb.addNote(sp::Note::D3, 1.10, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::F3, 1.30, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::D4, 1.50, 0.40, 1.0, 1, s);
+	wb.addNote(sp::Note::D3, 1.10, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::F3, 1.30, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::D4, 1.50, 0.40, 1.0, 2, s);
 	// --, s
-	wb.addNote(sp::Note::E4, 2.20, 0.40, 1.0, 1, s);
-	wb.addNote(sp::Note::F4, 2.60, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::E4, 2.80, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::F4, 3.00, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::E4, 3.20, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::C4, 3.40, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::A3, 3.60, 0.40, 1.0, 1, s);
+	wb.addNote(sp::Note::E4, 2.20, 0.40, 1.0, 2, s);
+	wb.addNote(sp::Note::F4, 2.60, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::E4, 2.80, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::F4, 3.00, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::E4, 3.20, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::C4, 3.40, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::A3, 3.60, 0.40, 1.0, 2, s);
 
-	wb.addNote(sp::Note::A3, 4.20, 0.40, 1.0, 1, s);
-	wb.addNote(sp::Note::D3, 4.60, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::D3, 4.80, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::F3, 5.00, 0.40, 1.0, 1, s);
-	wb.addNote(sp::Note::A3, 5.40, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::A3, 5.60, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::D3, 5.80, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::F3, 6.00, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::G3, 6.20, 0.20, 1.0, 1, s);
-	wb.addNote(sp::Note::E3, 6.40, 0.20, 1.0, 1, s); 
+	wb.addNote(sp::Note::A3, 4.20, 0.40, 1.0, 2, s);
+	wb.addNote(sp::Note::D3, 4.60, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::D3, 4.80, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::F3, 5.00, 0.40, 1.0, 2, s);
+	wb.addNote(sp::Note::A3, 5.40, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::A3, 5.60, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::D3, 5.80, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::F3, 6.00, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::G3, 6.20, 0.20, 1.0, 2, s);
+	wb.addNote(sp::Note::E3, 6.40, 0.20, 1.0, 2, s); 
 	
 	Instrument t(0.1, 0.05, 1.0, 0.02);
 	
