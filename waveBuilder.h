@@ -6,6 +6,7 @@
 #include "waveForm.h"
 #include "waveFile.h"
 #include <algorithm>
+#include <utility>
 #include <instrument.h>
 
 namespace sp {
@@ -20,9 +21,13 @@ class BasicWaveBuilder {
 
 protected:
 
-	std::vector<unsigned char> 	data8;
-	std::vector<short>			data16;
-	std::vector<int>				data32;
+	/* 
+		The data and the aumont of notes played on an interval. 
+		This is used to take the arithmetic mean and prevent
+		problems of overflow. 
+	*/
+	std::vector< std::pair<double, int> > 	data;
+
 
 	int 			channelsQty;
 	int 			sampleRate;

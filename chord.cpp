@@ -7,7 +7,7 @@ sp::Chord::Chord() {
 	totalVolume = 0.0;
 }
 
-void sp::Chord::addNote(sp::Note n, int I) {
+void sp::Chord::addNote(sp::Note n, double I) {
 	totalVolume += I;
 	notes.push_back( std::make_pair(n, I) );
 }

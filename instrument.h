@@ -13,7 +13,7 @@ class Instrument
 	double	 	 decayTime;
 	double 		 sustainLvl;
 	double 		 releaseTime;	
-	std::vector<int>		harmonics;
+	std::vector<double>		harmonics;
 
 public:
 	Instrument(double attackTime, 
@@ -22,20 +22,12 @@ public:
 
 	~Instrument();
 
-	void addHarmonic(int h);
+	void addHarmonic(double h);
 
 	double getADRduration(); 
 
-	double getNoteValue(sp::Note note, double t0, double t, 
+	double getAmplitude(double note, double t0, double t, 
 		double mpl, double volume, double holdDuration);
-
-
-	/*
-		Discretize a note based on the start time of its pressing, the
-		duration (time while pressed) and the volume 
-		(relative volume or absolute, doesn't matter)
-	*/
-	double discretizeChord(sp::Chord chord, double t0, double duration, double volume);
 };
 
 }

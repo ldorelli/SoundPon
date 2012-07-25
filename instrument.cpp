@@ -18,20 +18,20 @@ double sp::Instrument::getADRduration() {
 	return attackTime + releaseTime + decayTime;
 }
 
-void sp::Instrument::addHarmonic(int h) {
+void sp::Instrument::addHarmonic(double h) {
 	harmonics.push_back(h);
 }
 
 #include <iostream>
 using namespace std;
-double sp::Instrument::getNoteValue(sp::Note note, double t0, double t, 
+double sp::Instrument::getAmplitude(double freq, double t0, double t, 
 	double mpl, double volume, double holdDuration)
 {
 	//cout << t << " " << t0 << " " << holdDuration <<  endl;
 	t = t  - t0;
 	t0 = 0;
 
-	double freq = note.getFrequency() * mpl;
+	freq *= mpl;
 
 /*	
 A	   /\
@@ -42,7 +42,7 @@ A	   /\
 */
 
   /* 
-  		pitch = m * time + b 
+  		volume = m * time + b 
   		This will multiply the sine wave
   */
   /* Attack phase */

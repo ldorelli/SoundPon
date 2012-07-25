@@ -14,7 +14,7 @@ namespace sp {
 class Chord {
 private:
 
-	std::vector< std::pair<sp::Note, int> >		notes;
+	std::vector< std::pair<sp::Note, double> >		notes;
 	double									totalVolume;
 
 public:
@@ -24,7 +24,7 @@ public:
 	/*
 		Adds a note to the chord
 	*/	
-	void addNote(sp::Note n, int I = 1);
+	void addNote(sp::Note n, double I = 1.0);
 
 	/* 
 		Generates the correct wave of the Chord 
