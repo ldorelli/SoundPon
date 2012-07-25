@@ -19,7 +19,7 @@ sp::BasicWaveBuilder::BasicWaveBuilder(int channelsQty,
 	this->sampleRate = sampleRate;
 	this->totalTime = seconds;
 	timePerSample = (double) 1/sampleRate;
-	hertzFrequency = (double) 2 * pi/sampleRate;
+	multiplier = (double) 2 * pi;
 	this->bitsPerSample = bitsPerSample;
 
 }
@@ -44,28 +44,66 @@ void sp::BasicWaveBuilder::writeToWave(std::string fileName) {
 	file.close();
 }
 
-
+using namespace std;
 void sp::BasicWaveBuilder::addNote(sp::Note note, double t, double duration, double volume, int channel)
 {
 	channel--;
 	int i = getSampleIndexByTime(t);
 	int j = getSampleIndexByTime(t + duration) - 1;
+	//cout << t << " " << j * timePerSample + t << " " << duration << endl;
 
 	for( ; i < j; i++) {
 		if(bitsPerSample == 8) {
 			data8[channelsQty*i+channel] = 
 				data8[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, volume * 256);
+				Chord::discretizeSingleNote(note, timePerSample*i, multiplier, volume * 256);
 		} else if(bitsPerSample == 16) {
+			//std::cout << (t+timePerSample*i) << std::endl;
 			data16[channelsQty*i+channel] = 
 				data16[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, volume * (1<<15));
+				Chord::discretizeSingleNote(note, timePerSample*i, multiplier, volume * (1<<15));
+			//std::cout << data16[channelsQty*i+channel] << std::endl;
 		} else {
 			data32[channelsQty*i+channel] = 
 				data32[channelsQty*i+channel] +  
-				Chord::discretizeSingleNote(note, i, hertzFrequency, volume * (1<<30));
+				Chord::discretizeSingleNote(note, t+timePerSample*i, multiplier, volume * (1<<30));
 		}
 	}
+}
+
+
+void sp::BasicWaveBuilder::addNote(sp::Note note, double t, double duration, double volume, int channel,
+		sp::Instrument instr)
+{
+	channel--;
+	double tf = instr.getADRduration(); 
+	//duration = tf + duration;
+	int i = getSampleIndexByTime(t);
+	int j = getSampleIndexByTime(t + duration) - 1;
+//	cout << t << " " << j * timePerSample  << " " << duration << endl;
+	duration = duration - tf;
+
+	for(; i < j; i++) {
+		if(bitsPerSample == 8) {
+			data8[channelsQty*i+channel] = 
+				data8[channelsQty*i+channel] + 
+				256 * Chord::discretizeSingleNote(note, timePerSample * i, multiplier, volume);
+		} else if(bitsPerSample == 16) {
+
+			short noteToAdd = 
+				(1<<15) * instr.getNoteValue(note, t, timePerSample * i, multiplier, 
+						volume, duration);
+			data16[channelsQty*i+channel]  = data16[channelsQty*i+channel] + noteToAdd;
+			//data16[channelsQty*i+channel] 
+			//	= data16[channelsQty*i+channel]/tot * tot +
+			//		noteToAdd/tot * tot;
+		} else {
+			data32[channelsQty*i+channel] = 
+				data32[channelsQty*i+channel] +  
+				Chord::discretizeSingleNote(note, t + timePerSample * i, multiplier, volume * (1<<30));
+		}
+	}
+
 }
 
 void sp::BasicWaveBuilder::setWave(WaveForm *wf, double t, double duration)
@@ -83,131 +121,3 @@ void sp::BasicWaveBuilder::setWave(WaveForm *wf, double t, double duration)
 	}
 }
 
-sp::ASDRWaveBuilder::ASDRWaveBuilder(int channelsQty, int seconds, int sampleRate, int bitsPerSample,
-		double a, double s, double d, double h, double r)
-			: BasicWaveBuilder(channelsQty, seconds, sampleRate, bitsPerSample)
-{
-	this->a = a, this->s = s, this->d = d, this->r = r, this->h = h;
-	/* Cria um vetor com todas as amostras */
-	if(bitsPerSample == 8) {
-		maxVolume = 128;
-		data8 = std::vector<unsigned char> ();
-	} else if(bitsPerSample == 16) {
-		maxVolume = (1<<15);
-		data16 = std::vector<short> ();
-	} else {
-		maxVolume = (1<<30);
-		data32 = std::vector<int> ();
-	}
-
-	this->channelsQty = channelsQty;
-	this->sampleRate = sampleRate;
-	this->totalTime = seconds;
-	timePerSample = (double) 1/sampleRate;
-	hertzFrequency = (double) 2 * pi/sampleRate;
-	this->bitsPerSample = bitsPerSample;
-
-}
-
-void sp::ASDRWaveBuilder::addNote(
-	sp::Note note, double t, double duration, double volume, int channel)
-{
-
-	/* 
-		t is the relative timestamp from the beg of note.
-		During t-a the volume rises to the attack level, linearly	
-		during a-d the volume rises to the sustain lvl (s), linearly
-		During b-duration the note decays from s with a factor u
-		During duration-duration+release, the volume drops linearly (release)
-		The total time thus is a+d+duration+r
-		All is multiplied by volume. 
-	*/
-	double noteTimeSpan = a+d+duration+r;
-
-	int start = getSampleIndexByTime(t);
-	int peakTime = getSampleIndexByTime(t+a);
-	int holdTime = getSampleIndexByTime(t+a+d);
-	int releaseStart = getSampleIndexByTime(t+a+d+duration);
-	int noteEnding = getSampleIndexByTime(t+a+d+duration+r);
-
-	int i = start;
-	int j = noteEnding;
-
-	if(bitsPerSample == 8) {
-		if(j > data8.size()) data8.resize(j+1);
-	} else if(bitsPerSample == 16) {
-		if(j > data16.size()) data8.resize(j+1);
-	} else {
-		if(j > data32.size()) data32.resize(j+1);
-	}
-
-	//Volume = m * t + b 
-	double m = volume/a;
-	double b = -i * m;
-
-	for( ; i <= peakTime; i++) {
-		double vol = m * i + b;
-		if(bitsPerSample == 8) {
-			data8[channelsQty*i+channel] = 
-				data8[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * 256);
-		} else if(bitsPerSample == 16) {
-			data16[channelsQty*i+channel] = 
-				data16[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * (1<<15));
-		} else {
-			data32[channelsQty*i+channel] = 
-				data32[channelsQty*i+channel] +  
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * (1<<30));
-		}
-	}
-	/*
-	      /\ <- aqui
-		 /	_ _ _ _ 
-		/           \
-	*/
-
-	/* Volume = m * t + b */
-	 m = (s - peakTime)/d;
-	 b = volume - m * peakTime;
-	for( ; i <= holdTime; i++) {
-		double vol = m * i + b;
-		if(bitsPerSample == 8) {
-			data8[channelsQty*i+channel] = 
-				data8[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * 256);
-		} else if(bitsPerSample == 16) {
-			data16[channelsQty*i+channel] = 
-				data16[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * (1<<15));
-		} else {
-			data32[channelsQty*i+channel] = 
-				data32[channelsQty*i+channel] +  
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * (1<<30));
-		}
-	}
-
-	/* Parte fixa da nota */
-	for( ; i <= holdTime; i++) {
-		double vol = m * i + b;
-		if(bitsPerSample == 8) {
-			data8[channelsQty*i+channel] = 
-				data8[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * 256);
-		} else if(bitsPerSample == 16) {
-			data16[channelsQty*i+channel] = 
-				data16[channelsQty*i+channel] + 
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * (1<<15));
-		} else {
-			data32[channelsQty*i+channel] = 
-				data32[channelsQty*i+channel] +  
-				Chord::discretizeSingleNote(note, i, hertzFrequency, vol * (1<<30));
-		}
-	}
-
-
-}	
-
-int sp::ASDRWaveBuilder::getSampleIndexByTime(double t) {
-	return (t/timePerSample);
-}

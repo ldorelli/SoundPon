@@ -39,7 +39,7 @@ public:
 	double getMixedFrequency(double t, double baseFrequency);
 
 	static double discretizeSingleNote(
-		sp::Note note, int t, double baseFrequency, double volume);
+		sp::Note note, double t, double baseFrequency, double volume);
 };
 
 }

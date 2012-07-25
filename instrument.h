@@ -3,6 +3,7 @@
 
 #include <note.h>
 #include <chord.h>
+#include <vector>
 
 namespace sp {
 
@@ -12,16 +13,21 @@ class Instrument
 	double	 	 decayTime;
 	double 		 sustainLvl;
 	double 		 releaseTime;	
-	int 		 harmonicsProduced;
+	std::vector<int>		harmonics;
 
 public:
 	Instrument(double attackTime, 
 		double decayTime, double sustainLvl, 
-		double releaseTime, int harmonicsProduced);
+		double releaseTime);
 
 	~Instrument();
 
-	double dicretizeChord(sp::Note note, double t0, double duration, double volume);
+	void addHarmonic(int h);
+
+	double getADRduration(); 
+
+	double getNoteValue(sp::Note note, double t0, double t, 
+		double mpl, double volume, double holdDuration);
 
 
 	/*
@@ -29,7 +35,7 @@ public:
 		duration (time while pressed) and the volume 
 		(relative volume or absolute, doesn't matter)
 	*/
-	double discretizeNote(sp::Chord chord, double t0, double duration, double volume);
+	double discretizeChord(sp::Chord chord, double t0, double duration, double volume);
 };
 
 }

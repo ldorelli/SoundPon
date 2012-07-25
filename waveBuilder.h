@@ -6,7 +6,7 @@
 #include "waveForm.h"
 #include "waveFile.h"
 #include <algorithm>
-
+#include <instrument.h>
 
 namespace sp {
 
@@ -26,7 +26,7 @@ protected:
 
 	int 			channelsQty;
 	int 			sampleRate;
-	double			hertzFrequency;
+	double			multiplier;
 	double			totalTime;
 	double 			timePerSample;
 	int 			bitsPerSample;
@@ -47,28 +47,12 @@ public:
 	*/
 	virtual void addNote(sp::Note note, double t, double duration, double volume, int channel);
 
+
+	virtual void addNote(sp::Note note, double t, double duration, double volume, int channel,
+		sp::Instrument instr);
+
 	virtual void setWave(WaveForm *wf, double t, double duration);
 
-};
-
-class ASDRWaveBuilder : public BasicWaveBuilder
-{
-private:	
-	double a, s, d, r, h;
-public:
-	ASDRWaveBuilder(int channelsQty, int seconds, int sampleRate, int bitsPerSample,
-					 double a, double s, double d, double h, double r);
-	
-	/*
-		Writes the given Nothe into file
-		On offset time t, with duration seconds 
-		Volume is between 0 - 1 and is a relative value
-		Channel is the channel to add the audio into
-	*/
-
-	int getSampleIndexByTime(double t);
-	void addNote(sp::Note note, double t, double duration, double volume, int channel);
-	
 };
 
 }
