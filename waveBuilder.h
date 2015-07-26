@@ -2,12 +2,12 @@
 #define WAVE_BUILDER_H
 
 #include "note.h"
-#include "chord.h"
 #include "waveForm.h"
 #include "waveFile.h"
 #include <algorithm>
 #include <utility>
 #include <instrument.h>
+#include <SFML/Audio.hpp>
 
 namespace sp {
 
@@ -26,7 +26,7 @@ protected:
 		This is used to take the arithmetic mean and prevent
 		problems of overflow. 
 	*/
-	std::vector< std::pair<double, int> > 	data;
+	std::vector<double> 	data;
 
 
 	int 			channelsQty;
@@ -35,24 +35,18 @@ protected:
 	double			totalTime;
 	double 			timePerSample;
 	int 			bitsPerSample;
-	double 			maxVolume;
+	double	 			maxVolume;
 
 public:
 
-	BasicWaveBuilder(int channelsQty, int seconds, int sampleRate, int bitsPerSample);
+	BasicWaveBuilder(int channelsQty, int seconds, int sampleRate, int bitsPerSample, double volume);
 
 	virtual int getSampleIndexByTime(double t);
 
+	void buildSFMLBuffer (sf::SoundBuffer &buf);
+
 	void writeToWave(std::string fileName);
-	/*
-		Writes the given Nothe into file
-		On offset time t, with duration seconds 
-		Volume is between 0 - 1 and is a relative value
-		Channel is the channel to add the audio into
-	*/
-	virtual void addNote(sp::Note note, double t, double duration, double volume, int channel);
-
-
+	
 	virtual void addNote(sp::Note note, double t, double duration, double volume, int channel,
 		sp::Instrument instr);
 

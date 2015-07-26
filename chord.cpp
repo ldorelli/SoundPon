@@ -1,4 +1,3 @@
-#include <chord.h>
 #include <cmath>
 #include <algorithm>
 #include <iostream>
